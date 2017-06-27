@@ -26,7 +26,6 @@
   "homepage": "https://github.com/dfcreative/string-to-arraybuffer#readme",
   "dependencies": {
     "atob-lite": "^2.0.0",
-    "data-uri-to-buffer": "^1.0.0",
     "is-base64": "^0.0.4"
   },
   "devDependencies": {
