@@ -4,19 +4,8 @@
 var isBrowser = require('is-browser');
 var toAB = require('./');
 var t = require('tape')
+var toString =  require('arraybuffer-to-string')
 
-
-
-
-
-function toString (buf) {
-    var bufView = new Uint8Array(buf);
-    var str = []
-    for (var i=0, l = bufView.length; i<l; i++) {
-        str[i] = String.fromCharCode(bufView[i]);
-    }
-    return str.join('');
-}
 
 
 t('bare-bones Data URIs', t => {
@@ -98,11 +87,10 @@ t('"UTF-8 in Base64" URIs', t => {
     var uri = 'data:text/plain;charset=UTF-8;base64,16nXnNeV150=';
 
     var abuf = toAB(uri);
-    var buf = Buffer.from(abuf)
     t.equal('text/plain', abuf.type);
     t.equal('UTF-8', abuf.charset);
-    t.equal(8, buf.length);
-    t.equal('שלום', buf.toString('utf8'));
+    t.equal(8, abuf.byteLength);
+    t.equal('שלום', toString(abuf, 'utf8'));
 
     t.end()
 });
@@ -111,11 +99,10 @@ t('"UTF-8 in URL-encoding" URIs', t => {
     var uri = 'data:text/plain;charset=UTF-8,%d7%a9%d7%9c%d7%95%d7%9d';
 
     var abuf = toAB(uri);
-    var buf = Buffer.from(abuf)
     t.equal('text/plain', abuf.type);
     t.equal('UTF-8', abuf.charset);
-    t.equal(8, buf.length);
-    t.equal('שלום', buf.toString('utf8'));
+    t.equal(8, abuf.byteLength);
+    t.equal('שלום', toString(abuf, 'utf8'));
 
     t.end()
 });
@@ -128,11 +115,10 @@ t('"base64" Data URIs with newlines', t => {
       '9TXL0Y4OHwAAAABJRU5ErkJggg==';
 
     var abuf = toAB(uri);
-    var buf = Buffer.from(abuf)
     t.equal('image/png', abuf.type);
     t.equal('iVBORw0KGgoAAAANSUhEUgAAAAUA' +
       'AAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO' +
-      '9TXL0Y4OHwAAAABJRU5ErkJggg==', buf.toString('base64'));
+      '9TXL0Y4OHwAAAABJRU5ErkJggg==', toString(abuf, 'base64'));
 
     t.end()
 });
