@@ -7,7 +7,6 @@
 var atob = require('atob-lite')
 var isBase64 = require('is-base64')
 var assert = require('assert')
-var decode = require('./decode')
 
 module.exports = function stringToArrayBuffer (arg) {
 	assert(typeof arg === 'string', 'Argument should be a string')
@@ -16,26 +15,49 @@ module.exports = function stringToArrayBuffer (arg) {
 	if (/^data\:/i.test(arg)) return decode(arg)
 
 	//base64
-	if (isBase64(arg)) return base642ab(arg)
+	if (isBase64(arg)) arg = atob(arg)
 
-	//plain string
 	return str2ab(arg)
 }
 
-function str2ab(str) {
-	var buf = new ArrayBuffer(str.length*2); // 2 bytes for each char
-	var bufView = new Uint16Array(buf);
-	for (var i=0, strLen=str.length; i<strLen; i++) {
-		bufView[i] = str.charCodeAt(i);
-	}
-	return buf;
-}
-
-function base642ab(str) {
-	var binary = atob(str),
-		array = new Uint8Array(binary.length);
-	for(var i = 0; i < binary.length; i++) {
-		array[i] = binary.charCodeAt(i);
+function str2ab (str) {
+	var array = new Uint8Array(str.length);
+	for(var i = 0; i < str.length; i++) {
+		array[i] = str.charCodeAt(i);
 	}
 	return array.buffer
+}
+
+function decode(uri) {
+	// strip newlines
+	uri = uri.replace(/\r?\n/g, '');
+
+	// split the URI up into the "metadata" and the "data" portions
+	var firstComma = uri.indexOf(',');
+	if (-1 === firstComma || firstComma <= 4) throw new TypeError('malformed data-URI');
+
+	// remove the "data:" scheme and parse the metadata
+	var meta = uri.substring(5, firstComma).split(';');
+
+	var base64 = false;
+	var charset = 'US-ASCII';
+	for (var i = 0; i < meta.length; i++) {
+		if ('base64' == meta[i]) {
+			base64 = true;
+		} else if (0 == meta[i].indexOf('charset=')) {
+			charset = meta[i].substring(8);
+		}
+	}
+
+	// get the encoded data portion and decode URI-encoded chars
+	var data = unescape(uri.substring(firstComma + 1));
+
+	if (base64) data = atob(data)
+
+	var abuf = str2ab(data)
+
+	abuf.type = meta[0] || 'text/plain'
+	abuf.charset = charset
+
+	return abuf
 }

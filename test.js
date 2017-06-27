@@ -6,6 +6,9 @@ var toAB = require('./');
 var t = require('tape')
 
 
+
+
+
 function toString (buf) {
     var bufView = new Uint8Array(buf);
     var str = []
@@ -16,7 +19,7 @@ function toString (buf) {
 }
 
 
-t('should decode bare-bones Data URIs', t => {
+t('bare-bones Data URIs', t => {
     var uri = 'data:,Hello%2C%20World!';
 
     var buf = toAB(uri);
@@ -25,7 +28,7 @@ t('should decode bare-bones Data URIs', t => {
     t.end()
 });
 
-t('should decode bare-bones "base64" Data URIs', t => {
+t('bare-bones "base64" Data URIs', t => {
     var uri = 'data:text/plain;base64,SGVsbG8sIFdvcmxkIQ%3D%3D';
 
     var buf = toAB(uri);
@@ -36,7 +39,7 @@ t('should decode bare-bones "base64" Data URIs', t => {
     t.end()
 });
 
-t('should decode plain-text Data URIs', t => {
+t('plain-text Data URIs', t => {
     var html = '<!DOCTYPE html>'+
                '<html lang="en">'+
                '<head><title>Embedded Window</title></head>'+
@@ -57,14 +60,15 @@ t('should decode plain-text Data URIs', t => {
 // the next 4 tests are from:
 // https://bug161965.bugzilla.mozilla.org/attachment.cgi?id=94670&action=view
 
-t('should decode "ISO-8859-8 in Base64" URIs', t => {
+t('"ISO-8859-8 in Base64" URIs', t => {
     var uri = 'data:text/plain;charset=iso-8859-8-i;base64,+ezl7Q==';
 
-    var buf = toAB(uri);
+    var abuf = toAB(uri);
 
-    // t.equal('text/plain', buf.type);
-    // t.equal('iso-8859-8-i', buf.charset);
-    buf = Buffer.from(buf)
+    t.equal('text/plain', abuf.type);
+    t.equal('iso-8859-8-i', abuf.charset);
+    var buf = Buffer.from(abuf)
+
     t.equal(4, buf.length);
     t.equal(0xf9, buf[0]);
     t.equal(0xec, buf[1]);
@@ -74,7 +78,7 @@ t('should decode "ISO-8859-8 in Base64" URIs', t => {
     t.end()
 });
 
-t('should decode "ISO-8859-8 in URL-encoding" URIs', t => {
+t('"ISO-8859-8 in URL-encoding" URIs', t => {
     var uri = 'data:text/plain;charset=iso-8859-8-i,%f9%ec%e5%ed';
 
     var abuf = toAB(uri)
@@ -90,7 +94,7 @@ t('should decode "ISO-8859-8 in URL-encoding" URIs', t => {
     t.end()
 });
 
-t('should decode "UTF-8 in Base64" URIs', t => {
+t('"UTF-8 in Base64" URIs', t => {
     var uri = 'data:text/plain;charset=UTF-8;base64,16nXnNeV150=';
 
     var abuf = toAB(uri);
@@ -103,7 +107,7 @@ t('should decode "UTF-8 in Base64" URIs', t => {
     t.end()
 });
 
-t('should decode "UTF-8 in URL-encoding" URIs', t => {
+t('"UTF-8 in URL-encoding" URIs', t => {
     var uri = 'data:text/plain;charset=UTF-8,%d7%a9%d7%9c%d7%95%d7%9d';
 
     var abuf = toAB(uri);
@@ -118,7 +122,7 @@ t('should decode "UTF-8 in URL-encoding" URIs', t => {
 
 // this next one is from Wikipedia IIRC
 
-t('should decode "base64" Data URIs with newlines', t => {
+t('"base64" Data URIs with newlines', t => {
     var uri = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA\n' +
       'AAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO\n' +
       '9TXL0Y4OHwAAAABJRU5ErkJggg==';
@@ -133,7 +137,7 @@ t('should decode "base64" Data URIs with newlines', t => {
     t.end()
 });
 
-t('should decode a plain-text URI with a space character in it', t => {
+t('a plain-text URI with a space character in it', t => {
     var uri = 'data:,foo bar';
 
     var buf = toAB(uri);
@@ -143,7 +147,7 @@ t('should decode a plain-text URI with a space character in it', t => {
     t.end()
 });
 
-t('should decode data with a "," comma char', t => {
+t('data with a "," comma char', t => {
     var uri = 'data:,a,b';
     var buf = toAB(uri);
     t.equal('text/plain', buf.type);
@@ -152,7 +156,7 @@ t('should decode data with a "," comma char', t => {
     t.end()
 });
 
-t('should decode data with traditionally reserved characters like ";"', t => {
+t('data with traditionally reserved characters like ";"', t => {
     var uri = 'data:,;test';
     var buf = toAB(uri);
     t.equal('text/plain', buf.type);
@@ -162,11 +166,24 @@ t('should decode data with traditionally reserved characters like ";"', t => {
 });
 
 
-t('base64')
+t('base64 string', t => {
+    var str = Buffer.from('12345', 'binary').toString('base64')
 
-t('non-decodable')
+    var buf = toAB(str)
+    t.equal(toString(buf), '12345')
 
-t.skip('unicode data-uri', t => {
-    t.equal(toAB('uuLMhh').byteLength, 16)
     t.end()
 })
+
+t('plain string', t => {
+    var buf = toAB('Hello World!')
+    t.equal(toString(buf), 'Hello World!')
+
+    t.end()
+})
+
+t('unicode data-uri', t => {
+    t.equal(toAB('uuLMhh').byteLength, 6)
+    t.end()
+})
+

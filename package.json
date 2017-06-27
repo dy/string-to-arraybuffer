@@ -6,9 +6,6 @@
   "scripts": {
     "test": "node test.js"
   },
-  "browser": {
-    "./decode": "./decode-browser"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/dfcreative/string-to-arraybuffer.git"
