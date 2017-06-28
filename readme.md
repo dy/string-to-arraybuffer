@@ -22,5 +22,6 @@ var abuf4 = str2ab('data:text/plain;base64,SGVsbG8sIFdvcmxkIQ%3D%3D')
 
 ### Related
 
+* [arraybuffer-to-string](https://github.com/dfcreative/arraybuffer-to-string) − represent binary data in string
 * [data-uri-to-buffer](https://www.npmjs.com/package/data-uri-to-buffer) − decode URI string to Buffer.
 * [to-array-buffer](https://www.npmjs.com/package/to-array-buffer) − convert anything to ArrayBuffer.
