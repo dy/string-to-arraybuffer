@@ -1,6 +1,6 @@
 {
   "name": "string-to-arraybuffer",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Convert base64/datauri/plain string to ArrayBuffer",
   "main": "index.js",
   "scripts": {
