@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/dfcreative/string-to-arraybuffer.git"
+    "url": "git+https://github.com/dy/string-to-arraybuffer.git"
   },
   "keywords": [
     "arraybuffer",
@@ -16,14 +16,17 @@
     "array",
     "buffer",
     "string",
-    "base64"
+    "base64",
+    "data-uri",
+    "data url",
+    "uint8"
   ],
   "author": "Dima Yv <dfcreative@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/dfcreative/string-to-arraybuffer/issues"
+    "url": "https://github.com/dy/string-to-arraybuffer/issues"
   },
-  "homepage": "https://github.com/dfcreative/string-to-arraybuffer#readme",
+  "homepage": "https://github.com/dy/string-to-arraybuffer#readme",
   "dependencies": {
     "atob-lite": "^2.0.0",
     "is-base64": "^0.0.4"
