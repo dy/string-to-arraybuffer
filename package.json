@@ -29,7 +29,7 @@
   "homepage": "https://github.com/dy/string-to-arraybuffer#readme",
   "dependencies": {
     "atob-lite": "^2.0.0",
-    "is-base64": "^0.0.4"
+    "is-base64": "^0.1.0"
   },
   "devDependencies": {
     "arraybuffer-to-string": "^1.0.0",

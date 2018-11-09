@@ -6,10 +6,9 @@
 
 var atob = require('atob-lite')
 var isBase64 = require('is-base64')
-var assert = require('assert')
 
 module.exports = function stringToArrayBuffer (arg) {
-	assert(typeof arg === 'string', 'Argument should be a string')
+	if (typeof arg !== 'string') throw Error('Argument should be a string')
 
 	//valid data uri
 	if (/^data\:/i.test(arg)) return decode(arg)
